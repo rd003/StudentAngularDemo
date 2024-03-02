@@ -20,7 +20,11 @@ import { StudentModel } from "./student.model";
   template: `
     <h1 style="color:red">Students (Reset form after save)</h1>
     <ng-container *ngIf="students$ | async as students">
-      <app-student-form (submit)="onSubmit($event)" />
+      <app-student-form
+        (submit)="onSubmit($event)"
+        (reset)="onReset()"
+        [setFormData]="studentToUpdate"
+      />
       <app-student-list
         [students]="students"
         (edit)="onEdit($event)"
@@ -32,13 +36,13 @@ import { StudentModel } from "./student.model";
 })
 export class StudentComponent implements OnInit {
   studentStore = inject(Store);
-
+  studentToUpdate: StudentModel | null = null;
   students$ = this.studentStore.select(StudentSelectors.selectStudents);
   loading$ = this.studentStore.select(StudentSelectors.selectStudentLoading);
   error$ = this.studentStore.select(StudentSelectors.selectStudentError);
 
   onEdit(student: StudentModel) {
-    alert(JSON.stringify(student));
+    this.studentToUpdate = student;
   }
 
   onDelete(student: StudentModel) {
@@ -49,7 +53,9 @@ export class StudentComponent implements OnInit {
     alert(JSON.stringify(student));
   }
 
-  onReset() {}
+  onReset() {
+    this.studentToUpdate = null;
+  }
   ngOnInit() {
     this.studentStore.dispatch(StudentActions.loadStudents());
   }

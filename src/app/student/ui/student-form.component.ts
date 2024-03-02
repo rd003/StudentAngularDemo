@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   inject,
@@ -25,7 +26,7 @@ import { ButtonModule } from "primeng/button";
   template: `
     <form
       [formGroup]="studentForm"
-      (ngSubmit)="onPost()"
+      (ngSubmit)="onPost($event)"
       style="display: flex;gap:10px;align-items:center;margin-bottom:25px"
     >
       <input type="hidden" formControlName="id" />
@@ -52,9 +53,12 @@ import { ButtonModule } from "primeng/button";
   `,
   styles: [``],
 })
-export class StudentFormComponent implements OnInit {
-  @Input() student: StudentModel = { id: "", name: "", email: "" };
+export class StudentFormComponent {
+  @Input() set setFormData(student: StudentModel | null) {
+    if (student) this.studentForm.patchValue(student);
+  }
   @Output() submit = new EventEmitter<StudentModel>();
+  @Output() reset = new EventEmitter();
 
   fb = inject(FormBuilder);
   studentForm: FormGroup = this.fb.group({
@@ -63,16 +67,15 @@ export class StudentFormComponent implements OnInit {
     email: ["", [Validators.email, Validators.required]],
   });
 
-  onPost() {
-    // alert(JSON.stringify(this.studentForm.value));
+  onPost(event: Event) {
+    event.stopPropagation();
     var student: StudentModel = Object.assign(this.studentForm);
     this.submit.emit(student);
+    this.studentForm.reset();
   }
 
   onReset() {
     this.studentForm.reset();
-  }
-  ngOnInit(): void {
-    this.studentForm.patchValue(this.student);
+    this.reset.emit();
   }
 }
