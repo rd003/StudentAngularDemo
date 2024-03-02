@@ -6,7 +6,7 @@ import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: "root" })
 export class StudentService {
-  private apiUrl = environment.API_BASE_URL;
+  private apiUrl = environment.API_BASE_URL + "/students";
   private http = inject(HttpClient);
 
   addStudent(student: StudentModel): Observable<StudentModel> {
