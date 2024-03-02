@@ -69,7 +69,7 @@ export class StudentFormComponent {
 
   onPost(event: Event) {
     event.stopPropagation();
-    var student: StudentModel = Object.assign(this.studentForm);
+    var student: StudentModel = Object.assign(this.studentForm.value);
     this.submit.emit(student);
     this.studentForm.reset();
   }

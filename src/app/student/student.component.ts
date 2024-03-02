@@ -50,6 +50,7 @@ export class StudentComponent implements OnInit {
   }
 
   onSubmit(student: StudentModel) {
+    // console.log(student);
     alert(JSON.stringify(student));
   }
 
