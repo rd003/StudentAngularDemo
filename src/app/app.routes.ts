@@ -7,6 +7,14 @@ export const routes: Routes = [
     component: HomeComponent,
   },
   {
+    path: "students",
+    loadComponent() {
+      return import("./student/student.component").then(
+        (a) => a.StudentComponent
+      );
+    },
+  },
+  {
     path: "",
     redirectTo: "/home",
     pathMatch: "full",

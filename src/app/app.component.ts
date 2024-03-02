@@ -11,7 +11,7 @@ import { RouterModule, RouterOutlet } from "@angular/router";
         <a routerLink="/home" routerLinkActive="active">Home</a>
       </li>
       <li>
-        <a routerLink="/student" routerLinkActive="active">Student</a>
+        <a routerLink="/students" routerLinkActive="active">Student</a>
       </li>
     </ul>
     <div style="padding: 20px">
