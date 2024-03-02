@@ -20,6 +20,7 @@ import { StudentModel } from "./student.model";
   template: `
     <h1>Students</h1>
     <ng-container *ngIf="students$ | async as students">
+      <app-student-form />
       <app-student-list
         [students]="students"
         (edit)="onEdit($event)"
