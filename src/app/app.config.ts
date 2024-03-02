@@ -8,19 +8,20 @@ import { provideEffects } from "@ngrx/effects";
 import {
   StudentFeatureKey,
   studentReducer,
-} from "./student/store/book.reducer";
+} from "./student/store/student.reducer";
+import { StudentEffets } from "./student/store/student.effects";
 
 const reducers = {
   [StudentFeatureKey]: studentReducer,
 };
 
-// const effects = [];
+const effects = [StudentEffets];
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideStore(reducers),
     provideHttpClient(),
-    // provideEffects(effects),
+    provideEffects(effects),
   ],
 };
