@@ -18,9 +18,9 @@ import { StudentModel } from "./student.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AsyncPipe, StudentListComponent, StudentFormComponent, NgIf],
   template: `
-    <h1>Students</h1>
+    <h1 style="color:red">Students (Reset form after save)</h1>
     <ng-container *ngIf="students$ | async as students">
-      <app-student-form />
+      <app-student-form (submit)="onSubmit($event)" />
       <app-student-list
         [students]="students"
         (edit)="onEdit($event)"
@@ -44,6 +44,12 @@ export class StudentComponent implements OnInit {
   onDelete(student: StudentModel) {
     alert(JSON.stringify(student));
   }
+
+  onSubmit(student: StudentModel) {
+    alert(JSON.stringify(student));
+  }
+
+  onReset() {}
   ngOnInit() {
     this.studentStore.dispatch(StudentActions.loadStudents());
   }

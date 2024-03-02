@@ -1,7 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
+  OnInit,
+  Output,
   inject,
 } from "@angular/core";
 import { StudentModel } from "../student.model";
@@ -30,20 +33,29 @@ import { ButtonModule } from "primeng/button";
       <input type="text" pInputText formControlName="name" />
       <label for="email">Email:</label>
       <input type="email" pInputText formControlName="email" />
-      <button
+
+      <p-button
         type="submit"
-        pButton
         icon="pi pi-save"
         label="Save"
-        class="btn btn-primary"
         [disabled]="studentForm.invalid"
-      ></button>
+      ></p-button>
+
+      <p-button
+        type="button"
+        icon="pi pi-refresh"
+        label="Reset"
+        severity="secondary"
+        (onClick)="onReset()"
+      ></p-button>
     </form>
   `,
   styles: [``],
 })
-export class StudentFormComponent {
+export class StudentFormComponent implements OnInit {
   @Input() student: StudentModel = { id: "", name: "", email: "" };
+  @Output() submit = new EventEmitter<StudentModel>();
+
   fb = inject(FormBuilder);
   studentForm: FormGroup = this.fb.group({
     id: [""],
@@ -52,6 +64,15 @@ export class StudentFormComponent {
   });
 
   onPost() {
-    alert(JSON.stringify(this.studentForm.value));
+    // alert(JSON.stringify(this.studentForm.value));
+    var student: StudentModel = Object.assign(this.studentForm);
+    this.submit.emit(student);
+  }
+
+  onReset() {
+    this.studentForm.reset();
+  }
+  ngOnInit(): void {
+    this.studentForm.patchValue(this.student);
   }
 }
