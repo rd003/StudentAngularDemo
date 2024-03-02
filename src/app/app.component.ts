@@ -8,14 +8,6 @@ import { ButtonModule } from "primeng/button";
   standalone: true,
   imports: [RouterOutlet, RouterModule, ToolbarModule, ButtonModule],
   template: `
-    <!-- <ul>
-      <li>
-        <a routerLink="/home" routerLinkActive="active">Home</a>
-      </li>
-      <li>
-        <a routerLink="/students" routerLinkActive="active">Student</a>
-      </li>
-    </ul> -->
     <p-toolbar>
       <div class="p-toolbar-group-left" style="display: flex;gap:10px">
         <button
@@ -46,19 +38,6 @@ import { ButtonModule } from "primeng/button";
   `,
   styles: [
     `
-      ul {
-        display: flex;
-        gap: 10px;
-        padding: 10px 20px;
-      }
-      li {
-        list-style: none;
-      }
-      a {
-        text-decoration: none;
-        color: black;
-        font-size: 20px;
-      }
       .active {
         background-color: rgb(255 0 0);
 
