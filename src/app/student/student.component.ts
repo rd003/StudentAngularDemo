@@ -31,7 +31,8 @@ import { ProgressBarModule } from "primeng/progressbar";
   ],
   providers: [MessageService],
   template: `
-    <h1>Students</h1>
+    <h1 style="color: red;">Students (generate id automatically)</h1>
+    <h2>blank id are getting saved</h2>
     <div
       *ngIf="loading$ | async as loading"
       style="
@@ -86,17 +87,22 @@ export class StudentComponent implements OnInit {
   }
 
   onDelete(student: StudentModel) {
-    alert(JSON.stringify(student));
+    console.log(student);
+    if (window.confirm("Are you sure to delete this item?")) {
+      // this.studentStore.dispatch(StudentActions.deleteSdudent(student));
+    }
   }
 
   onSubmit(student: StudentModel) {
-    // console.log(student);
-    if (student.id) {
-      // edit
+    // console.log(student.id);
+    if (student.id?.length > 0) {
+      console.log("update");
+      // this.studentStore.dispatch(StudentActions.updateStudent({ student }));
     } else {
-      //add
-      this.studentStore.dispatch(StudentActions.addStudent({ student }));
+      console.log("edit");
+      //this.studentStore.dispatch(StudentActions.addStudent({ student }));
     }
+    this.studentToUpdate = null;
     this.messageService.add({
       severity: "success",
       summary: "Success",
