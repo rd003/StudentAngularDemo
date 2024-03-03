@@ -35,4 +35,30 @@ export class StudentEffets {
       )
     )
   );
+
+  updateStudent = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StudentActions.updateStudent),
+      switchMap((action) =>
+        this.studentService.updateStudent(action.student).pipe(
+          map(() =>
+            StudentActions.updateStudentSuccess({ student: action.student })
+          ),
+          catchError((error) => of(StudentActions.updateStudentFailure(error)))
+        )
+      )
+    )
+  );
+
+  deleteStudent = createEffect(() =>
+    this.actions$.pipe(
+      ofType(StudentActions.deleteSdudent),
+      switchMap((action) =>
+        this.studentService.deleteStudent(action.id).pipe(
+          map(() => StudentActions.deleteSdudentSuccess({ id: action.id })),
+          catchError((error) => of(StudentActions.deleteStudentFailure(error)))
+        )
+      )
+    )
+  );
 }
