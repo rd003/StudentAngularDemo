@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment.development";
-import { Observable } from "rxjs";
+import { Observable, delay, throwError } from "rxjs";
 import { StudentModel } from "./student.model";
 import { HttpClient } from "@angular/common/http";
 
@@ -14,7 +14,8 @@ export class StudentService {
   }
 
   getStudents(): Observable<StudentModel[]> {
-    return this.http.get<StudentModel[]>(this.apiUrl);
+    //throw Error("fat gayi");
+    return this.http.get<StudentModel[]>(this.apiUrl).pipe(delay(500));
   }
 
   getStudent(id: string): Observable<StudentModel> {

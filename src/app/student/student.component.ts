@@ -11,35 +11,75 @@ import { StudentActions } from "./store/student.actions";
 import { StudentListComponent } from "./ui/student-list.component";
 import { StudentFormComponent } from "./ui/student-form.component";
 import { StudentModel } from "./student.model";
+import { ToastModule } from "primeng/toast";
+import { MessageService } from "primeng/api";
+import { MessagesModule } from "primeng/messages";
+import { ProgressBarModule } from "primeng/progressbar";
 
 @Component({
   selector: "app-student",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AsyncPipe, StudentListComponent, StudentFormComponent, NgIf],
+  imports: [
+    AsyncPipe,
+    StudentListComponent,
+    StudentFormComponent,
+    NgIf,
+    ToastModule,
+    MessagesModule,
+    ProgressBarModule,
+  ],
+  providers: [MessageService],
   template: `
-    <h1 style="color:red">Students (Reset form after save)</h1>
+    <h1>Students</h1>
+    <div
+      *ngIf="loading$ | async as loading"
+      style="
+    margin:20px 0px"
+    >
+      <p-progressBar
+        mode="indeterminate"
+        [style]="{ height: '6px' }"
+      ></p-progressBar>
+    </div>
+    <ng-container *ngIf="error$ | async as error">
+      <p-messages
+        *ngIf="error"
+        [(value)]="message"
+        [enableService]="false"
+        [closable]="true"
+        >{{ error }}</p-messages
+      >
+    </ng-container>
+    <p-toast position="bottom-center"></p-toast>
+    <app-student-form
+      (submit)="onSubmit($event)"
+      (reset)="onReset()"
+      [setFormData]="studentToUpdate"
+    />
     <ng-container *ngIf="students$ | async as students">
-      <app-student-form
-        (submit)="onSubmit($event)"
-        (reset)="onReset()"
-        [setFormData]="studentToUpdate"
-      />
       <app-student-list
+        *ngIf="students.length > 0; else noData"
         [students]="students"
         (edit)="onEdit($event)"
         (delete)="onDelete($event)"
       />
+      <ng-template #noData> No records found </ng-template>
     </ng-container>
   `,
   styles: [``],
 })
 export class StudentComponent implements OnInit {
   studentStore = inject(Store);
+  messageService = inject(MessageService);
   studentToUpdate: StudentModel | null = null;
   students$ = this.studentStore.select(StudentSelectors.selectStudents);
   loading$ = this.studentStore.select(StudentSelectors.selectStudentLoading);
   error$ = this.studentStore.select(StudentSelectors.selectStudentError);
+
+  message = [
+    { severity: "error", summary: "Error", detail: "Something went wrong" },
+  ];
 
   onEdit(student: StudentModel) {
     this.studentToUpdate = student;
@@ -51,7 +91,17 @@ export class StudentComponent implements OnInit {
 
   onSubmit(student: StudentModel) {
     // console.log(student);
-    alert(JSON.stringify(student));
+    if (student.id) {
+      // edit
+    } else {
+      //add
+      this.studentStore.dispatch(StudentActions.addStudent({ student }));
+    }
+    this.messageService.add({
+      severity: "success",
+      summary: "Success",
+      detail: "Saved successfully",
+    });
   }
 
   onReset() {

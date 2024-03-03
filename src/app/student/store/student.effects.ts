@@ -15,9 +15,10 @@ export class StudentEffets {
       switchMap((action) =>
         this.studentService.getStudents().pipe(
           map((students) => StudentActions.loadStudentSuccess({ students })),
-          catchError((error) =>
-            of(StudentActions.loadStudentFailure({ error }))
-          )
+          catchError((error) => {
+            console.log(`Error:${error}`);
+            return of(StudentActions.loadStudentFailure({ error }));
+          })
         )
       )
     )
@@ -29,9 +30,7 @@ export class StudentEffets {
       switchMap((action) =>
         this.studentService.addStudent(action.student).pipe(
           map((student) => StudentActions.addStudentSuccess({ student })),
-          catchError((error) =>
-            of(StudentActions.loadStudentFailure({ error }))
-          )
+          catchError((error) => of(StudentActions.addStudentFailure({ error })))
         )
       )
     )
