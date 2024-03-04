@@ -9,4 +9,5 @@ Run `ng serve --open` for a dev server
 ## Api server (json-server)
 Run `npm run server` for starting api server.
 
-![Alt text]([image_url](https://github.com/rd003/StudentAngularDemo/blob/master/screenshot.jpg)https://github.com/rd003/StudentAngularDemo/blob/master/screenshot.jpg)
+![Screenshot](https://raw.githubusercontent.com/rd003/StudentAngularDemo/master/screenshot.jpg)
+
