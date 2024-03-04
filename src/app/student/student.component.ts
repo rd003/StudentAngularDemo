@@ -12,9 +12,11 @@ import { StudentListComponent } from "./ui/student-list.component";
 import { StudentFormComponent } from "./ui/student-form.component";
 import { StudentModel } from "./student.model";
 import { ToastModule } from "primeng/toast";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { MessagesModule } from "primeng/messages";
 import { ProgressBarModule } from "primeng/progressbar";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { generateGUID } from "../helpers/uuid";
 
 @Component({
   selector: "app-student",
@@ -28,10 +30,11 @@ import { ProgressBarModule } from "primeng/progressbar";
     ToastModule,
     MessagesModule,
     ProgressBarModule,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   template: `
-    <h1 style="color: red;">Students (generate id automatically)</h1>
+    <h1>Students</h1>
     <h2>blank id are getting saved</h2>
     <div
       *ngIf="loading$ | async as loading"
@@ -52,6 +55,7 @@ import { ProgressBarModule } from "primeng/progressbar";
         >{{ error }}</p-messages
       >
     </ng-container>
+    <p-confirmDialog></p-confirmDialog>
     <p-toast position="bottom-center"></p-toast>
     <app-student-form
       (submit)="onSubmit($event)"
@@ -73,6 +77,7 @@ import { ProgressBarModule } from "primeng/progressbar";
 export class StudentComponent implements OnInit {
   studentStore = inject(Store);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
   studentToUpdate: StudentModel | null = null;
   students$ = this.studentStore.select(StudentSelectors.selectStudents);
   loading$ = this.studentStore.select(StudentSelectors.selectStudentLoading);
@@ -87,20 +92,43 @@ export class StudentComponent implements OnInit {
   }
 
   onDelete(student: StudentModel) {
-    console.log(student);
-    if (window.confirm("Are you sure to delete this item?")) {
-      // this.studentStore.dispatch(StudentActions.deleteSdudent(student));
-    }
+    // if (window.confirm("Are you sure to delete this item?")) {
+    //this.studentStore.dispatch(StudentActions.deleteSdudent(student));
+    // }
+    this.confirmationService.confirm({
+      message: "Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-info-circle",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text",
+      accept: () => {
+        this.studentStore.dispatch(StudentActions.deleteSdudent(student));
+        this.messageService.add({
+          severity: "success",
+          summary: "Result",
+          detail: "Deleted Successfully",
+          life: 2000,
+        });
+      },
+      reject: () => {
+        // this.messageService.add({
+        //   severity: "error",
+        //   summary: "Rejected",
+        //   detail: "Process incomplete",
+        //   life: 3000,
+        // });
+      },
+    });
   }
 
   onSubmit(student: StudentModel) {
     // console.log(student.id);
     if (student.id?.length > 0) {
-      console.log("update");
-      // this.studentStore.dispatch(StudentActions.updateStudent({ student }));
+      this.studentStore.dispatch(StudentActions.updateStudent({ student }));
     } else {
-      console.log("edit");
-      //this.studentStore.dispatch(StudentActions.addStudent({ student }));
+      student.id = generateGUID();
+      this.studentStore.dispatch(StudentActions.addStudent({ student }));
     }
     this.studentToUpdate = null;
     this.messageService.add({
